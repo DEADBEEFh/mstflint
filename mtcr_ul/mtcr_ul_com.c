@@ -1066,7 +1066,8 @@ int mtcr_pciconf_wait_on_flag(mfile *mf, u_int8_t expected_val)
     u_int32_t flag;
     do {
         if (retries > IFC_MAX_RETRIES) {
-            return ME_PCI_IFC_TOUT;
+            //return ME_PCI_IFC_TOUT;
+	    break;
         }
         READ4_PCI(mf, &flag, mf->vsec_addr + PCI_ADDR_OFFSET, "read flag", return ME_PCI_READ_ERROR);
         flag = EXTRACT(flag, PCI_FLAG_BIT_OFFS, 1);
@@ -1113,12 +1114,14 @@ int mtcr_pciconf_rw(mfile *mf, unsigned int offset, u_int32_t *data, int rw)
         // write address
         WRITE4_PCI(mf, address, mf->vsec_addr + PCI_ADDR_OFFSET, "write offset", return ME_PCI_WRITE_ERROR);
         // wait on flag
-        rc = mtcr_pciconf_wait_on_flag(mf, 0);
+        //rc = mtcr_pciconf_wait_on_flag(mf, 0);
+	msleep(1);
     } else {
         // write address
         WRITE4_PCI(mf, address, mf->vsec_addr + PCI_ADDR_OFFSET, "write offset", return ME_PCI_WRITE_ERROR);
         // wait on flag
-        rc = mtcr_pciconf_wait_on_flag(mf, 1);
+        //rc = mtcr_pciconf_wait_on_flag(mf, 1);
+	msleep(1);
         // read data
         READ4_PCI(mf, data, mf->vsec_addr + PCI_DATA_OFFSET, "read value", return ME_PCI_READ_ERROR);
     }
